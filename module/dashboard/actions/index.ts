@@ -10,6 +10,49 @@ import { Octokit } from "octokit";
 import prisma from "@/lib/db";
 import { se } from "date-fns/locale";
 
+// Get contribution stats (like contribution calendar) for the authenticated user
+export async function getContributionStats() {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session?.user) {
+      throw new Error("User is not authenticated");
+    }
+
+    const token = await getGithubToken();
+    //Get the actual github username from the github api
+    const octokit = new Octokit({ auth: token });
+
+    // Fetch github username from database
+    const { data: user } = await octokit.rest.users.getAuthenticated();
+
+    if (!user.login) {
+      throw new Error("GitHub username not found");
+    }
+    const username = user.login;
+    const calendar = await fetchUserContributions(token, username);
+
+    if (!calendar) {
+      return null;
+    }
+
+    const contributions = calendar.weeks.flatMap((week: any) =>
+      week.contributionDays.map((day: any) => ({
+        date: day.date,
+        count: day.contributionCount,
+        level: Math.min(Math.floor(day.contributionCount / 5), 4), // Level from 0 to 4
+      }))
+    );
+
+    return { contributions, totalContributions: calendar.totalContributions }; // Return only contributions array
+  } catch (error) {
+    console.error("Error fetching contribution stats:", error);
+    return null;
+  }
+}
+
 export async function getDashboardStats() {
   try {
     const session = await auth.api.getSession({
