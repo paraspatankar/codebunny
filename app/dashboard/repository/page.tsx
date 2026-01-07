@@ -14,6 +14,8 @@ import { Input } from "@/components/ui/input";
 import { ExternalLink, Star, Search } from "lucide-react";
 import { useRepositories } from "@/module/repository/hooks/use-repositories";
 import { RepositoryListSkeleton } from "@/module/repository/components/repository-skelelton";
+import { useConnectRepository } from "@/module/repository/hooks/use-connect-repository";
+import { set } from "zod";
 
 interface Repository {
   id: number;
@@ -42,6 +44,8 @@ const RepositoryPage = () => {
     null
   );
 
+  // Connect repository
+  const { mutate: connectRepo } = useConnectRepository();
   const [searchQuery, setSearchQuery] = useState("");
 
   const observerTarget = useRef<HTMLDivElement | null>(null);
@@ -91,7 +95,21 @@ const RepositoryPage = () => {
   );
 
   // Placeholder for connect handler
-  const handleConnect = (repo: any) => {};
+  const handleConnect = (repo: Repository) => {
+    setLocalConnectingId(repo.id);
+    connectRepo(
+      {
+        owner: repo.full_name.split("/")[0],
+        repo: repo.name,
+        githubId: repo.id,
+      },
+      {
+        onSettled: () => {
+          setLocalConnectingId(null);
+        },
+      }
+    );
+  };
 
   return (
     <div className="space-y-4">

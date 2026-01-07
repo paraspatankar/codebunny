@@ -3,6 +3,9 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/db";
 import { headers } from "next/headers";
 import { types } from "util";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 /* ***
  * Getting the Github access token from the database for the logged-in user
@@ -101,6 +104,38 @@ export const getRepositories = async (
     visibility: "all",
     per_page: per_page,
     page: page,
+  });
+
+  return data;
+};
+
+export const createWebhook = async (owner: string, repo: string) => {
+  const token = await getGithubToken();
+  const octokit = new Octokit({ auth: token });
+
+  // Create the webhook
+  const webhookUrl = `${process.env.NEXT_PUBLIC_APP_BASE_URL}/api/webhooks/github`;
+
+  const { data: hooks } = await octokit.rest.repos.listWebhooks({
+    owner,
+    repo,
+  });
+
+  // Check if the webhook already exists
+  const existingHook = hooks.find((hook) => hook.config.url === webhookUrl);
+
+  if (existingHook) {
+    return existingHook;
+  }
+
+  const { data } = await octokit.rest.repos.createWebhook({
+    owner,
+    repo,
+    config: {
+      url: webhookUrl,
+      content_type: "json",
+    },
+    events: ["pull_request"],
   });
 
   return data;
