@@ -138,7 +138,26 @@ export async function disconnectRepository(repositoryId: string) {
       throw new Error("Repository not found");
     }
 
-    await deleteWebhook(repository.owner, repository.name);
+    const webhookDeleted = await deleteWebhook(repository.owner, repository.name);
+    
+    if (!webhookDeleted) {
+      console.warn(`Failed to delete webhook for ${repository.fullName}, but proceeding with repository deletion`);
+    }
+
+    await prisma.repository.delete({
+      where: {
+        id: repositoryId,
+        userId: session.user.id,
+      },
+    });
+
+    revalidatePath("/dashboard/settings", "page");
+    revalidatePath("/dashboard/repository", "page");
+
+    return { 
+      success: true,
+      webhookDeleted 
+    };
 
     await prisma.repository.delete({
       where: {
