@@ -34,7 +34,7 @@ import { Alert } from "@/components/ui/alert";
 
 export function RepositoryList() {
   const queryClient = useQueryClient();
-  const [disconnetAllOpen, setDisconnectAllOpen] = useState(false);
+  const [disconnectAllOpen, setDisconnectAllOpen] = useState(false);
 
   const { data: repositories, isLoading } = useQuery({
     queryKey: ["connected-repositories"],
