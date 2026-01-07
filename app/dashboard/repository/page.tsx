@@ -120,7 +120,7 @@ const RepositoryPage = () => {
           <Card key={repo.id} className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <div className="flex items-start justify-between">
-                <div className="space-y-2 flex-1">
+                <div className="space-y-2 flex-2">
                   <CardTitle className="flex items-center gap-2">
                     {repo.name}
                   </CardTitle>
@@ -129,30 +129,32 @@ const RepositoryPage = () => {
                     <Badge variant="secondary">Connected</Badge>
                   )}
                 </div>
-                <CardDescription>{repo.description}</CardDescription>
-              </div>
-              <div className="flex gap-2">
-                <Button variant="ghost" size="icon" asChild>
-                  <a
-                    href={repo.html_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="icon" asChild>
+                    <a
+                      href={repo.html_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <ExternalLink className="w-4 h-4" />
+                    </a>
+                  </Button>
+                  <Button
+                    className="hover:cursor-pointer"
+                    onClick={() => handleConnect(repo)}
+                    disabled={localConnectingId === repo.id || repo.isConnected}
+                    variant={repo.isConnected ? "outline" : "default"}
                   >
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
-                </Button>
-                <Button
-                  onClick={() => handleConnect(repo)}
-                  disabled={localConnectingId === repo.id || repo.isConnected}
-                  variant={repo.isConnected ? "outline" : "default"}
-                >
-                  {localConnectingId === repo.id
-                    ? "Connecting..."
-                    : repo.isConnected
-                    ? "Connected"
-                    : "Connect"}
-                </Button>
+                    {localConnectingId === repo.id
+                      ? "Connecting..."
+                      : repo.isConnected
+                      ? "Connected"
+                      : "Connect"}
+                  </Button>
+                </div>
               </div>
+              <CardDescription>{repo.description}</CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
