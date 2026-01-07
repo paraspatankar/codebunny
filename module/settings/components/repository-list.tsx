@@ -203,7 +203,11 @@ export function RepositoryList() {
                       </AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() => disconnectMutation.mutate(repo.id)}
-                        className="bg-destructive text-destructive-foreground hove:bg-destructive/90"
+                     <AlertDialogAction
+                       onClick={() => disconnectMutation.mutate(repo.id)}
+                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                       disabled={disconnectMutation.isPending}
+                     >
                         disabled={disconnectMutation.isPending}
                       >
                         {disconnectMutation.isPending
