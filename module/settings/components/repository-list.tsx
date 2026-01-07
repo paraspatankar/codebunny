@@ -177,7 +177,11 @@ export function RepositoryList() {
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="ml-4 text-estructive hover:text-destructive hover:bg-destructive/10 hover:cursor-pointer"
+                   <Button
+                     variant="ghost"
+                     size="sm"
+                    className="ml-4 text-destructive hover:text-destructive hover:bg-destructive/10 hover:cursor-pointer"
+                   >
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
