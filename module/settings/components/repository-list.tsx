@@ -100,7 +100,7 @@ export function RepositoryList() {
           </div>
           {repositories && repositories.length > 0 && (
             <AlertDialog
-              open={disconnetAllOpen}
+              open={disconnectAllOpen}
               onOpenChange={setDisconnectAllOpen}
             >
               <AlertDialogTrigger asChild>
@@ -177,11 +177,7 @@ export function RepositoryList() {
                     <Button
                       variant="ghost"
                       size="sm"
-                   <Button
-                     variant="ghost"
-                     size="sm"
-                    className="ml-4 text-destructive hover:text-destructive hover:bg-destructive/10 hover:cursor-pointer"
-                   >
+                      className="ml-4 text-destructive hover:text-destructive hover:bg-destructive/10 hover:cursor-pointer"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -203,13 +199,13 @@ export function RepositoryList() {
                       </AlertDialogCancel>
                       <AlertDialogAction
                         onClick={() => disconnectMutation.mutate(repo.id)}
-                     <AlertDialogAction
-                       onClick={() => disconnectMutation.mutate(repo.id)}
-                       className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
-                       disabled={disconnectMutation.isPending}
-                     >
+                      ></AlertDialogAction>
+                      <AlertDialogAction
+                        onClick={() => disconnectMutation.mutate(repo.id)}
+                        className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
                         disabled={disconnectMutation.isPending}
                       >
+                        disabled={disconnectMutation.isPending}
                         {disconnectMutation.isPending
                           ? "Disconnecting..."
                           : "Disconnect"}

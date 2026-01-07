@@ -138,10 +138,15 @@ export async function disconnectRepository(repositoryId: string) {
       throw new Error("Repository not found");
     }
 
-    const webhookDeleted = await deleteWebhook(repository.owner, repository.name);
-    
+    const webhookDeleted = await deleteWebhook(
+      repository.owner,
+      repository.name
+    );
+
     if (!webhookDeleted) {
-      console.warn(`Failed to delete webhook for ${repository.fullName}, but proceeding with repository deletion`);
+      console.warn(
+        `Failed to delete webhook for ${repository.fullName}, but proceeding with repository deletion`
+      );
     }
 
     await prisma.repository.delete({
@@ -154,22 +159,10 @@ export async function disconnectRepository(repositoryId: string) {
     revalidatePath("/dashboard/settings", "page");
     revalidatePath("/dashboard/repository", "page");
 
-    return { 
+    return {
       success: true,
-      webhookDeleted 
+      webhookDeleted,
     };
-
-    await prisma.repository.delete({
-      where: {
-        id: repositoryId,
-        userId: session.user.id,
-      },
-    });
-
-    revalidatePath("/dashboard/settings", "page"); // Revalidate the page
-    revalidatePath("/dashboard/repository", "page"); // Q.What does RevalidatePath do? Answer: It revalidates the page, forcing a new request to the server to fetch the updated data.
-
-    return { success: true };
   } catch (error) {
     console.error("Error disconnecting repository:", error);
     return { success: false, error: "Failed to disconnect repository" };
