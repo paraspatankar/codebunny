@@ -7,6 +7,7 @@ import {
 import AppSidebar from "@/components/ui/app-sidebar";
 import { Separator } from "@/components/ui/separator";
 import { requireAuth } from "@/module/auth/utils/auth-utils";
+import { Toaster } from "sonner";
 
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   await requireAuth(); // Ensure the user is authenticated
@@ -19,7 +20,10 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
           <Separator orientation="vertical" className="mx-2 h-4" />
           <h1 className="text-xl font-semibold text-foreground">DashBoard</h1>
         </header>
-        <main className="flex-1 overflow-auto p-4 md:p-6">{children}</main>
+        <main className="flex-1 overflow-auto p-4 md:p-6">
+          {children}
+          <Toaster />
+        </main>
       </SidebarInset>
     </SidebarProvider>
   );
