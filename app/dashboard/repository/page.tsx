@@ -15,7 +15,6 @@ import { ExternalLink, Star, Search } from "lucide-react";
 import { useRepositories } from "@/module/repository/hooks/use-repositories";
 import { RepositoryListSkeleton } from "@/module/repository/components/repository-skelelton";
 import { useConnectRepository } from "@/module/repository/hooks/use-connect-repository";
-import { set } from "zod";
 
 interface Repository {
   id: number;
@@ -42,6 +41,9 @@ const RepositoryPage = () => {
 
   const [localConnectingId, setLocalConnectingId] = useState<number | null>(
     null
+  );
+  const [connectedRepoIds, setConnectedRepoIds] = useState<Set<number>>(
+    new Set()
   );
 
   // Connect repository
@@ -104,6 +106,9 @@ const RepositoryPage = () => {
         githubId: repo.id,
       },
       {
+        onSuccess: () => {
+          setConnectedRepoIds((prev) => new Set(prev).add(repo.id));
+        },
         onSettled: () => {
           setLocalConnectingId(null);
         },
@@ -138,14 +143,18 @@ const RepositoryPage = () => {
           <Card key={repo.id} className="hover:shadow-lg transition-shadow">
             <CardHeader>
               <div className="flex items-start justify-between">
-                <div className="space-y-2 flex-2">
-                  <CardTitle className="flex items-center gap-2">
-                    {repo.name}
-                  </CardTitle>
-                  <Badge variant="outline">{repo.language || "Unknown"}</Badge>
-                  {repo.isConnected && (
-                    <Badge variant="secondary">Connected</Badge>
-                  )}
+                <div className="flex-1">
+                  <div className="flex items-center gap-3">
+                    <CardTitle className="flex items-center gap-2">
+                      {repo.name}
+                    </CardTitle>
+                    <div className="flex items-center gap-2">
+                      <Badge variant="outline">{repo.language || "Unknown"}</Badge>
+                      {(repo.isConnected || connectedRepoIds.has(repo.id)) && (
+                        <Badge variant="secondary">Connected</Badge>
+                      )}
+                    </div>
+                  </div>
                 </div>
 
                 <div className="flex gap-2">
@@ -161,12 +170,12 @@ const RepositoryPage = () => {
                   <Button
                     className="hover:cursor-pointer"
                     onClick={() => handleConnect(repo)}
-                    disabled={localConnectingId === repo.id || repo.isConnected}
-                    variant={repo.isConnected ? "outline" : "default"}
+                    disabled={localConnectingId === repo.id || repo.isConnected || connectedRepoIds.has(repo.id)}
+                    variant={repo.isConnected || connectedRepoIds.has(repo.id) ? "outline" : "default"}
                   >
                     {localConnectingId === repo.id
                       ? "Connecting..."
-                      : repo.isConnected
+                      : repo.isConnected || connectedRepoIds.has(repo.id)
                       ? "Connected"
                       : "Connect"}
                   </Button>
