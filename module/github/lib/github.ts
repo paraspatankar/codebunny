@@ -168,3 +168,80 @@ export const deleteWebhook = async (owner: string, repo: string) => {
     return false;
   }
 };
+
+export async function getRepoFileContents(
+  token: string,
+  owner: string,
+  repo: string,
+  path: string = ""
+): Promise<{ path: string; content: string }[]> {
+  const octokit = new Octokit({ auth: token });
+
+  const { data } = await octokit.rest.repos.getContent({
+    owner,
+    repo,
+    path,
+  });
+
+  if (!Array.isArray(data)) {
+    // It's a file
+
+    if (data.type === "file" && data.content) {
+      return [
+        {
+          path: data.path,
+          content: Buffer.from(data.content, "base64").toString("utf-8"),
+        },
+      ];
+    }
+
+    return [];
+  }
+
+  let files: { path: string; content: string }[] = [];
+
+  for (const item of data) {
+    if (item.type === "file") {
+      // Skip binary files early to avoid unnecessary API calls
+      if (!item.path.match(/\.(png|jpg|jpeg|gif|svg|ico|pdf|zip|tar|gz|woff|woff2|ttf|eot|mp3|mp4|webm|exe|dll|so|dylib)$/i)) {
+        try {
+          const { data: fileData } = await octokit.rest.repos.getContent({
+            owner,
+            repo,
+            path: item.path,
+          });
+
+          if (
+            !Array.isArray(fileData) &&
+            fileData.type === "file" &&
+            fileData.content
+          ) {
+            files.push({
+              path: item.path,
+              content: Buffer.from(fileData.content, "base64").toString("utf-8"),
+            });
+          }
+        } catch (error) {
+          console.error(`Failed to fetch file ${item.path}:`, error);
+        }
+      }
+    } else if (item.type === "dir") {
+      const subFiles = await getRepoFileContents(token, owner, repo, item.path);
+      files = files.concat(subFiles);
+      // files = [...files, ...subFiles];
+    }
+  }
+
+  return files;
+}
+
+// export const getRepoFileContents : Promise<{ path: string; content: string }>[]= async (
+//   token:string,
+//   owner: string,
+//   repo: string,
+//   path:string = ""
+// ) => {
+//   return (
+//     path:""
+//   )
+// };

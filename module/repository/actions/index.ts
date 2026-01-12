@@ -5,6 +5,7 @@ import { auth } from "@/lib/auth";
 import { headers } from "next/headers";
 import { createWebhook, getRepositories } from "@/module/github/lib/github";
 import { bigint, github } from "better-auth";
+import { inngest } from "@/inngest/client";
 
 export const fetchRepositories = async (
   page: number = 1,
@@ -67,7 +68,19 @@ export const connectRepository = async (
 
   //TODO: INCREMENT REPO COUNT FOR USAGE TRACKING
 
-  //TODO: TRIGGER REPOSITORY INDEXING FOR RAG (FIRE AND FORGOT)
+  //TRIGGER REPOSITORY INDEXING FOR RAG (FIRE AND FORGOT)
+  try {
+    await inngest.send({
+      name: "repository.connected",
+      data: {
+        owner,
+        repo,
+        userId: session.user.id,
+      },
+    });
+  } catch (error) {
+    console.error("Error sending repository.connected event:", error);
+  }
 
   return webhook;
 };
