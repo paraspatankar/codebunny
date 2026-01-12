@@ -202,24 +202,27 @@ export async function getRepoFileContents(
 
   for (const item of data) {
     if (item.type === "file") {
-      const { data: fileData } = await octokit.rest.repos.getContent({
-        owner,
-        repo,
-        path: item.path,
-      });
-
-      if (
-        !Array.isArray(fileData) &&
-        fileData.type === "file" &&
-        fileData.content
-      ) {
-        //Filter out non-code filed if needed (images, assets, etc.)
-        //For now, lets include everything that looks like text
-        if (!item.path.match(/\.(png|jpg|jpeg|gif|svg|ico|pdf|zip|tar|gz)$/i)) {
-          files.push({
+      // Skip binary files early to avoid unnecessary API calls
+      if (!item.path.match(/\.(png|jpg|jpeg|gif|svg|ico|pdf|zip|tar|gz|woff|woff2|ttf|eot|mp3|mp4|webm|exe|dll|so|dylib)$/i)) {
+        try {
+          const { data: fileData } = await octokit.rest.repos.getContent({
+            owner,
+            repo,
             path: item.path,
-            content: Buffer.from(fileData.content, "base64").toString("utf-8"),
           });
+
+          if (
+            !Array.isArray(fileData) &&
+            fileData.type === "file" &&
+            fileData.content
+          ) {
+            files.push({
+              path: item.path,
+              content: Buffer.from(fileData.content, "base64").toString("utf-8"),
+            });
+          }
+        } catch (error) {
+          console.error(`Failed to fetch file ${item.path}:`, error);
         }
       }
     } else if (item.type === "dir") {
