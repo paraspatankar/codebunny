@@ -6,4 +6,4 @@ export const pinecone = new Pinecone({
 });
 
 // Get the index
-export const pineconeIndex = pinecone.index("codebunny-vector-embeddings-v1");
+export const pineconeIndex = pinecone.index("codebunny24-vector-embeddings");
