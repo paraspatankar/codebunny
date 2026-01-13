@@ -21,10 +21,10 @@ export async function POST(req: NextRequest) {
 
       if (action === "opened" || action === "synchronize") {
         reviewPullRequest(owner, repoName, prNumber)
-          .then(() => console.log(`Review completed for $(repo) #${prNumber}`))
+          .then(() => console.log(`Review completed for ${repoName} #${prNumber}`))
           .catch((error: any) =>
             console.error(
-              `Error processing pull request $(repo) #${prNumber} : ${error}`
+              `Error processing pull request ${repoName} #${prNumber} : ${error}`
             )
           );
       }
