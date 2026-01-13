@@ -4,6 +4,14 @@ import { inngest } from "@/inngest/client";
 import prisma from "@/lib/db";
 import { getPullRequestDiff } from "@/module/github/lib/github";
 
+/**
+ * Queue a review for a GitHub pull request by fetching the PR diff and emitting a review request event.
+ *
+ * @param owner - GitHub repository owner or organization
+ * @param repo - GitHub repository name
+ * @param prNumber - Pull request number
+ * @returns An object with `success: true` and `message: "Review Queued"` on success; `undefined` if the operation failed and the error was recorded in the database
+ */
 export async function reviewPullRequest(
   owner: string,
   repo: string,

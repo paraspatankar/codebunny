@@ -1,6 +1,16 @@
 import { reviewPullRequest } from "@/module/ai/actions";
 import { NextResponse, NextRequest } from "next/server";
 
+/**
+ * Handle incoming GitHub webhook POST requests for repository events.
+ *
+ * Parses the request body and event header, responds to "Ping" with a pong,
+ * triggers a review for "pull_request" events when action is "opened" or "synchronize",
+ * and returns a JSON response indicating processing result.
+ *
+ * @param req - Incoming HTTP POST request containing a GitHub webhook payload
+ * @returns A JSON HTTP response: status 200 for successful handling ("Pong" for pings or "Event Processed" for handled events), or status 500 on internal errors.
+ */
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
