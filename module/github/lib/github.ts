@@ -203,7 +203,11 @@ export async function getRepoFileContents(
   for (const item of data) {
     if (item.type === "file") {
       // Skip binary files early to avoid unnecessary API calls
-      if (!item.path.match(/\.(png|jpg|jpeg|gif|svg|ico|pdf|zip|tar|gz|woff|woff2|ttf|eot|mp3|mp4|webm|exe|dll|so|dylib)$/i)) {
+      if (
+        !item.path.match(
+          /\.(png|jpg|jpeg|gif|svg|ico|pdf|zip|tar|gz|woff|woff2|ttf|eot|mp3|mp4|webm|exe|dll|so|dylib)$/i
+        )
+      ) {
         try {
           const { data: fileData } = await octokit.rest.repos.getContent({
             owner,
@@ -218,7 +222,9 @@ export async function getRepoFileContents(
           ) {
             files.push({
               path: item.path,
-              content: Buffer.from(fileData.content, "base64").toString("utf-8"),
+              content: Buffer.from(fileData.content, "base64").toString(
+                "utf-8"
+              ),
             });
           }
         } catch (error) {
@@ -235,6 +241,52 @@ export async function getRepoFileContents(
   return files;
 }
 
+export async function getPullRequestDiff(
+  token: string,
+  owner: string,
+  repo: string,
+  prNumber: number
+) {
+  const octokit = new Octokit({ auth: token });
+
+  const { data: pr } = await octokit.rest.pulls.get({
+    owner,
+    repo,
+    pull_number: prNumber,
+  });
+
+  const { data: diff } = await octokit.rest.pulls.get({
+    owner,
+    repo,
+    pull_number: prNumber,
+    mediaType: {
+      format: "diff",
+    },
+  });
+
+  return {
+    diff: diff as unknown as string,
+    title: pr.title,
+    description: pr.body || "",
+  };
+}
+
+export async function postReviewComment(
+  token: string,
+  owner: string,
+  repo: string,
+  prNumber: number,
+  review: string
+) {
+  const octokit = new Octokit({ auth: token });
+
+  await octokit.rest.issues.createComment({
+    owner,
+    repo,
+    issue_number: prNumber,
+    body: `## AI Code Review\n\n ${review}\n\n---\n*Powered by CodeBunny*`,
+  });
+}
 // export const getRepoFileContents : Promise<{ path: string; content: string }>[]= async (
 //   token:string,
 //   owner: string,
