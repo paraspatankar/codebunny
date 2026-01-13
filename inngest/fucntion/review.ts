@@ -101,6 +101,8 @@ export const generateReview = inngest.createFunction(
             status: "completed",
           },
         });
+      } else {
+        console.warn(`Repository ${owner}/${repo} not found, skipping review persistence`);
       }
     });
 
