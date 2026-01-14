@@ -169,6 +169,17 @@ export const deleteWebhook = async (owner: string, repo: string) => {
   }
 };
 
+/**
+ * Collects text file contents from a repository path (recursively).
+ *
+ * Skips common binary file types, decodes file contents from base64 to UTF-8, and returns a flat list of files with their contents. If `path` references a single file, the result contains that file; if no readable content is found an empty array is returned.
+ *
+ * @param token - GitHub access token used to read repository contents
+ * @param owner - Repository owner or organization
+ * @param repo - Repository name
+ * @param path - Path within the repository to read; defaults to the repository root
+ * @returns An array of objects with `path` (file path relative to the repository) and `content` (file contents decoded as UTF-8)
+ */
 export async function getRepoFileContents(
   token: string,
   owner: string,
@@ -241,6 +252,15 @@ export async function getRepoFileContents(
   return files;
 }
 
+/**
+ * Fetches a pull request's metadata and its raw unified diff.
+ *
+ * @param token - GitHub access token with permission to read the repository
+ * @param owner - Repository owner (user or organization)
+ * @param repo - Repository name
+ * @param prNumber - Pull request number
+ * @returns An object containing `diff` (unified diff text), `title` (pull request title), and `description` (pull request body or empty string)
+ */
 export async function getPullRequestDiff(
   token: string,
   owner: string,
@@ -271,6 +291,15 @@ export async function getPullRequestDiff(
   };
 }
 
+/**
+ * Posts a formatted AI review comment to a pull request.
+ *
+ * @param token - GitHub access token used to authenticate the API request
+ * @param owner - Repository owner login
+ * @param repo - Repository name
+ * @param prNumber - Pull request number to comment on
+ * @param review - Review text to include in the comment body
+ */
 export async function postReviewComment(
   token: string,
   owner: string,
