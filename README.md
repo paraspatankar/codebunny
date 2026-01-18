@@ -133,16 +133,15 @@ BETTER_AUTH_URL="http://localhost:3000"
 GITHUB_CLIENT_ID="your-github-client-id"
 GITHUB_CLIENT_SECRET="your-github-client-secret"
 
+# Application URL (use ngrok URL for webhooks during development)
+NEXT_PUBLIC_APP_BASE_URL="http://localhost:3000"
+
 # Google AI (Gemini)
 GOOGLE_GENERATIVE_AI_API_KEY="your-gemini-api-key"
 
-# Pinecone
-PINECONE_API_KEY="your-pinecone-api-key"
-PINECONE_INDEX="your-index-name"
-
-# Inngest (optional for local dev)
-INNGEST_EVENT_KEY="your-inngest-event-key"
-INNGEST_SIGNING_KEY="your-inngest-signing-key"
+# Pinecone (Vector Store)
+PINECONE_DB="your-pinecone-db-name"
+PINECONE_DB_API_KEY="your-pinecone-api-key"
 ```
 
 ### Getting API Keys
@@ -151,8 +150,7 @@ INNGEST_SIGNING_KEY="your-inngest-signing-key"
 |---------|-----------|
 | **GitHub OAuth** | [Create OAuth App](https://github.com/settings/developers) → Set callback URL to `http://localhost:3000/api/auth/callback/github` |
 | **Google Gemini** | [Google AI Studio](https://makersuite.google.com/app/apikey) → Create API key |
-| **Pinecone** | [Pinecone Console](https://app.pinecone.io/) → Create account → Get API key |
-| **Inngest** | [Inngest Dashboard](https://app.inngest.com/) → Create account → Get keys |
+| **Pinecone** | [Pinecone Console](https://app.pinecone.io/) → Create account → Get API key and database name |
 
 ## 📁 Project Structure
 
