@@ -73,8 +73,12 @@ export async function getDashboardStats() {
       throw new Error("GitHub username not found");
     }
 
-    // TODO: FETCH TOTAL CONNECTED REPOSITORIES FROM DB
-    const totalRepos = 30; // Placeholder value
+    // Fetch total connected repositories from database
+    const totalRepos = await prisma.repository.count({
+      where: {
+        userId: session.user.id,
+      },
+    });
 
     const calendar = await fetchUserContributions(token, user.login);
     const totalCommits = calendar?.totalContributions || 0;
@@ -87,8 +91,14 @@ export async function getDashboardStats() {
 
     const totalPRs = prs.total_count || 0;
 
-    // TODO: COUNT AI REVIEWS FROM DB
-    const totalReviews = 44; // Placeholder value
+    // Count AI reviews from database
+    const totalReviews = await prisma.review.count({
+      where: {
+        repository: {
+          userId: session.user.id,
+        },
+      },
+    });
 
     return {
       totalCommits,
