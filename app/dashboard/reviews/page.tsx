@@ -35,10 +35,37 @@ export default function ReviewPage() {
 
       {
          reviews?.length === 0 ? (
-            <Card>
+            <Card className="border-dashed">
                <CardContent className="pt-6">
-                  <div className="text-center py-12">
-                     <p className="text-muted-foreground">No reviews yet. Connect a repository and open a PR to </p>
+                  <div className="text-center py-16 px-4">
+                     {/* Animated Bunny */}
+                     <div className="mb-6 text-8xl animate-bounce">
+                        🐰
+                     </div>
+                     
+                     {/* Main Message */}
+                     <h3 className="text-2xl font-bold mb-3">
+                        No Reviews Yet!
+                     </h3>
+                     <p className="text-muted-foreground mb-6 max-w-md mx-auto">
+                        Your AI code review bunny is hopping with excitement! 🥕
+                        <br />
+                        Connect a repository and create a PR to see the magic happen.
+                     </p>
+                     
+                     {/* Action Buttons */}
+                     <div className="flex gap-3 justify-center flex-wrap">
+                        <Button asChild>
+                           <a href="/dashboard/repository">
+                              🔗 Connect Repository
+                           </a>
+                        </Button>
+                        <Button variant="outline" asChild>
+                           <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                              📝 Create a PR
+                           </a>
+                        </Button>
+                     </div>
                   </div>
                </CardContent>
             </Card>

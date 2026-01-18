@@ -20,9 +20,9 @@ const LoginUI = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex">
+    <div className="min-h-screen bg-background text-foreground flex flex-col md:flex-row">
       {/* Left Section - Hero Content */}
-      <div className="flex-1 flex flex-col justify-center px-12 py-16">
+      <div className="flex-1 flex flex-col justify-center px-6 md:px-12 py-8 md:py-16">
         <div className="max-w-lg">
           {/* Logo */}
           <div className="mb-16">
@@ -45,7 +45,7 @@ const LoginUI = () => {
         </div>
       </div>
       {/* Right Section - Login Form */}
-      <div className="flex-1 flex flex-col justify-center items-center px-12 py-16">
+      <div className="flex-1 flex flex-col justify-center items-center px-6 md:px-12 py-8 md:py-16">
         <div className="w-full max-w-sm">
           <div className="mb-12">
             <h2 className="text-3xl font-bold mb-2">Welcome Back</h2>
@@ -64,25 +64,9 @@ const LoginUI = () => {
             {isLoading ? "Signing in..." : "GitHub"}
           </button>
 
-          {/* Footer Links */}
-          <div className="space-y-4 text-center text-sm text-muted-foreground">
-            <div>
-              New to CodeRabbit?{" "}
-              <a
-                href="#"
-                className="text-primary hover:text-primary/80 font-semibold"
-              >
-                Sign Up
-              </a>
-            </div>
-            <div>
-              <a
-                href="#"
-                className="text-primary hover:text-primary/80 font-semibold"
-              >
-                Self-Hosted Services
-              </a>
-            </div>
+          {/* Info Text */}
+          <div className="text-center text-sm text-muted-foreground">
+            <p>Sign in with your GitHub account to get started with AI-powered code reviews</p>
           </div>
 
           {/* Bottom Links */}
